@@ -5,8 +5,8 @@ Read/Write floppy disk images.
 
 LICENSE
 ===============
-* Public Domain
-* 
+* Public Domain 
+
 COMPILE TOOLS
 ===============
 * 

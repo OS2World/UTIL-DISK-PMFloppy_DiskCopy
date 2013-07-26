@@ -1,0 +1,319 @@
+
+
+                   PMFloppy - a Floppy disk utility
+
+                                v2.02
+                        Public Domain software
+                     Copyright 1990, Greg Bryant
+
+
+
+I.  Introduction
+
+PMFloppy is a generic floppy disk utility.  It currently can copy and compare
+disks, and save their "images" into a file on a hard drive.  It is a 
+multi-threaded application, using background threads to prevent slowing down
+Presentation Manager.  It allows many disks (up to twenty) to be read into
+memory at the same time.  It does not require any disk swapping.  Look for
+further additions in the future.
+
+PMFloppy was written as an exercise in PM programming.  I wanted to put to 
+use some of the things I learned at the PM Apps class, and extend it a little
+to some topics not covered.  I was looking for a task that would lend itself
+well to multi-threading, when I ran across a PD program called DSKCPY by
+Brady Flowers.  Since DSKCPY was character-oriented,  I decided to wrap a
+PM interface around it and use the lengthy disk interactions as background
+threads.
+
+All the standard disclaimers about damage to data, hardware, personal sanity,
+etc caused by the program apply.  This is public domain software, which means
+you may not be charged any fees other than shipping and handling costs to
+receive it.
+
+
+
+II. Installation
+
+PMFloppy requires a system running OS/2 1.2 or higher.  Both FAT and HPFS
+file systems are supported.  Copy the file "PMFLOPPY.EXE" to your OS2
+subdirectory.  From PM open the Utilities Group from the Desktop Manager.
+Pull down the Program Menu and select New.  You will be presented with a
+dialog window.  Enter "PMFloppy" in the Program Title box, and
+"C:\OS2\PMFLOPPY.EXE" in the Path and File Name box.  If you wish to put the
+executable file elsewhere, you may, but be sure to change the path accordingly.
+Click on Add, and you're done.  
+
+Full source code is being distributed.  The extra files are not necessary to
+run the program, but are included if you wish to make modifications to the
+code, or use the code as a resource for your own PM programs.
+
+If you wish to rearrange the order of the items in the group, click on the
+icon of the file you would like to move with the right mouse button, and drag
+it to the desired position in the list.  Release the button, and the programs
+will shift to make room for the change.
+
+The distribution disk or archive should include the following files:
+
+pmfloppy.exe     ; executable file
+pmfloppy.doc     ; this documentation
+pmfloppy.rc      ; main resource file
+pmfloppy.c       ; front end source code
+pmfloppy.h       ; defines for main program
+pmfloppy.def     ; MSC define file
+pmfloppy.ico     ; incredible artwork
+pmfloppy         ; make file
+copydlgs.c       ; dialog procs source code
+copydlgs.dlg     ; resource file for dialog windows
+copydlgs.h       ; defines for dialog windows
+dskim.c          ; read and write the disk image
+dskim.h          ; header for disk image
+m.cmd            ; make command file
+dskcpy2a.zip     ; Brady's original program - requires PKUNZIP 1.02 or higher
+
+If all these files are not present, please feel free to request the complete
+file set.  I am currently on Internet at gregb@ncrwpd.dayton.ncr.com, and
+various BBSs such as:
+
+  Kyle's BBS      (513) 236-7085
+  Channel 1       (617) 354-8873
+  Gilmore Systems (805) 582-9306
+
+
+
+III.  Running PMFloppy
+
+When PMFloppy is running, you are faced with a simple menu bar.  You can select
+Disk, Image, or Exit.  At the bottom of the window, the status of the "images"
+is displayed.  Images are the internal representations of the data on the
+disk, as well as some information about the disk itself.  At program start,
+all images will be empty, and the status will reflect that.  You should never
+see an empty screen.
+
+If you select Disk, a drop-down menu will give you three options: Read, Write,
+and About.  The Read option allows you to read a disk into an image.  The
+Write option will allow you to write an image back out to a floppy disk.  The
+About option pops up an about box containing copyright information and the
+current version number.  At program start, the Write option will not be
+selectable, because there are no images to write.
+
+The Image selection produces a drop-down menu with four options: Load, Save,
+Delete, and Compare.  The Load option allows you to load an image from a file
+on a disk, and the Save option will produce one of those files from an image.
+The Delete option allows you to remove an image from memory.  This _will_not_
+erase any files from any disk.  The program has room for twenty images, and if
+you use all of those, or if you run out of swap space, you may need to delete
+one or more of the images already loaded.  The Compare option allows you to
+compare two images.
+
+The Exit option closes the program.  If an image is in use, reading, writing,
+or whatever, a warning box will be displayed.  Select Cancel to return to the
+program.
+
+Keyboard Accellerators have been set for all drop-down menu items.  To bypass
+the menus, use the control key and the first letter of the option you want to
+invoke.  For example, to read a disk into memory, hit ^R (control-R).
+
+All of the dialog boxes that you will see bear certain features in common.  All
+have OK and Cancel buttons.  If the OK button is clicked when an incorrect
+value has been entered for one of the fields, a message box will be displayed
+to tell you what the program doesn't like.  Many of these boxes also have
+suggestions for correcting the error.
+
+In any situation where there is a list box (a box with a single vertical scroll
+bar), there will invariably be an edit box directly above it.  You may enter
+text in any edit box.  You can only select text from a list box.  There are two
+types of scroll box-edit box combinations in the program, the image set, and 
+the file set.
+
+The first is the image set.  You may enter an image name into the image edit
+field, or select an existing image from the list box.  A single click on a name
+from the list box will move that name to the edit box, and a double click
+selects that name and exits the dialog.  This is the same as a single click
+each on the list box and then on the OK button.  If the program detects an
+error, an appropriate message will be displayed.
+
+Next is the file set.  In the file set, there are two list boxes side by side,
+and two boxes above - one for editting and one for display only.  The display
+box will show the current directory and can only be changed by double-clicking
+on an entry in the left list box.  The edit box displays the current file.  You
+can either type in a file name, or select one from the right list box.  Double
+clicking in the right list box is the same as a single click on the list box
+and then on the OK button.
+
+
+
+IV.  Notes
+
+Changes from 1.00
+  o Multiple buffers
+  o Load, Save, Delete, and Compare functions
+  o better management of threads
+  o better memory usage
+  o better usage of messages
+  o removed multiple access to a single image
+  o removed format teaser
+
+Known Anomolies 
+  o an error during a drive read or write will leave the status display in an
+    uncertain condition.
+  o opening the drive door during a disk operation doesn't bring up an error
+    until it's closed again.  This is due to the way the driver handles the
+    "disk change" line rather than an actual bug in the program.
+
+some thoughts for the future:
+  o show graphically the percentage done (modify the DisplayStatus routine)
+  o anonymous copies (no explicit image) disk-to-disk or disk-to-file.
+  o compress the disk image as saved to a file.
+  o provide a Format option
+
+This program was compiled with MS C 6.00 running under NCR's version of MS OS/2
+1.2 beta on an NCR 386sx/MCA.  This program is not supported or endorsed
+by NCR.
+
+
+
+V.   Technical Discussion
+
+Version 1.0
+
+The changes to Brady's code are relatively minor.  Apparently the
+BIOSPARAMETERBLOCK bug has been fixed in 1.2, because my header file matches
+what he had defined locally.  Since they were the same, I removed the local
+copy.  The OpenDrive funtion has been integrated into the disk functions.
+This is to keep the drive handles local to the thread.  Also, errors are now
+handled through a common error handler, which posts a message to the parent
+window - this is because background threads aren't allowed into the
+presentation space (or, if they are, it wasn't obvious to me).  Thus, I have
+three classes of messages being passed forward - Error, Status, and General.
+Currently the "General" messages are only passing Done up, but I wanted to
+leave it open for future use.
+
+Ah, the format.  This has caused me quite a bit of pain.  I really thought I
+had this one beaten, but I'm out of "play time", and it still doesn't work.
+If you enable the menu option (in the WM_INITMENU case for the main window),
+you can see what it does currently.  It will go through the disk, formatting
+each track (and dieing on errors - perfect disks only).  It will then build
+the root track based on an algorithm from Writing OS/2 Device Drivers (by
+Raymond Westwater, Addison-Wesley, p. 496), but when I go to write out the
+track, the IOCtl returns an invalid parameter.  Other unsolved format issues
+involve detecting a low density disk (unformatted) in a high density drive.
+I leave the resolution to this problem as an exercise to the reader.
+
+Having only recently come to the OS/2 world (from a wide variety of other OSs),
+and being relatively unwashed in the intricacies of MSC and PM, I ran into
+a few oddities only to be resolved by Spy and Logitech's Multiscope.  These I
+thought I would share, hopefully to prevent others from following the same
+road.  First, the disappearing window.  When I got to the point that my
+main window was coming up fine, and I was spinning off threads that didn't do
+anything beyond opening the drive, I added the first real task - the IOCtl to
+get the BPB, and then calculate the disk parameters.  This is just straight
+out of what Brady had done, so I felt relatively secure.  Well, for some 
+reason, shortly after the IOCtl, the window would close and the program would
+shut down.  No messages, no warnings, no phone calls, just gone.  I set Spy
+to work, and found that my window was receiving a WM_DESTROY message.  Well,
+I certainly wasn't sending it, so it had to be PM.  According to multiscope,
+I was just doing some assignment statements in my background thread when it
+died.  Not til I looked closely at the assignments did I realize there was a
+divide by zero.
+
+Conclusion 1: Certain run-time errors will cause a PM app to shut down without
+              warning.
+
+Now, why was there a divide by zero?  This was just straight out of Brady's
+original program.  I went back and recompiled his code under my make, and 
+found that his did the same thing.  Again, multiscope to the rescue,  the
+IOCtl was returning fine, the data was there and fine, but the structure wasn't
+interpreting it correctly.  Linker alignment?  No, actually compiler alignment.
+As I said, I'm new to MSC, and they have a -Zp parameter for packing.  Not 
+that it's documented anywhere on the IOCtl call, but Brady's program used it,
+and when I created my make, I left it off.  Problem solved.
+
+Conclusion 2:  Beware of compiler alignment as well as Linker alignment.
+
+The invisible dialog:  This one was actually simple, but again, it might save
+someone a few minutes.  A couple times I had dialog boxes that looked fine,
+all the code was in place, but they just wouldn't appear.  It turned out that
+one of my resource IDs was incorrect in the .DLG file.  Nobody would complain,
+but they also wouldn't comply.
+
+PM programming is actually quite interesting.  The quality of the tools is
+very good.  I've been playing recently with other programs, like Smalltalk/V
+PM and Object/1.  I've done some great prototypes very quickly with ST/V, but
+both products seem to need to mature a bit in the PM world.  Thanks again to
+Brady Flowers for the disk handling routines. Now I'd better get back to
+something that'll make the company money - unfortunately, I can't spend all
+my time just learning about the new stuff.
+
+Version 2.0
+
+You may have noticed that the format option is gone.  Completely.  If I get
+new information, I may try it again, put I decided it was silly to have two
+versions go by with the same teaser.
+
+I've made two main design changes in the program.  The first is the primary
+data structures.  There are now two.  First is the Thread Context structure.
+This allows me to keep track of errors and threads.  The second is the Disk
+Image.  This stores status information about the image as well as the disk
+data itself.  They are relatively straight forward.  The second main change
+involves memory allocation.  In Brady's original code, he was allocating 
+space on a track-by-track basis.  However, when you try to allocate pointers
+for more than two disks (at 160 per disk), things start to get lost.  For
+some reason, around track 120 on the third disk (not a consistent location),
+the program would GP fault during the read.  Not during the allocate - that
+(seemingly) worked fine.  So I ended up doing a single allocation for each
+disk via the DosAllocHuge.  For a 1.44MB floppy, this means 23 selectors per
+disk.  You'll notice I have two new routines - one to do the allocation and
+one to create a pointer for each track.  If you're working with something like
+this that has many parts, these two routines (or a variation thereon) should
+come in handy.
+
+The only bug I found in version 1.0 involved not releasing stack memory after
+a thread had completed.  As the fix was part of the data structure redesign,
+I decided not to do a point release, but just point out that it has been
+corrected.  The fix also brought out a shortcoming in Thread Management.  I
+needed a way to wait until a background had completely died before freeing
+its stack allocation.  Without some kind of wait, the foreground thread would
+often beat the background thread, so when the BG thread went to exit, it no
+longer had an execution context, causing a GP fault.  Since the only wait
+functions are for child processes rather than threads (and they don't work for
+threads, I tried), I ended up doing a busy wait, checking the thread's
+priority.  It's not real pretty, but it does work.  I'm open to a more elegant
+solution, however.
+
+I've changed the user defined messages to a simpler design, one I think is a
+bit more elegant than the brute-force method I used in 1.00.  The General
+message is now an official "Done" message, and the Status and Error messages
+are now generic to all background operations.  There are two new messages 
+being used for Compare.  Compare is a very special case, because it uses two
+images, where all other operations use one.  This compromised me design a
+little, but I think inclusion of the function was worth it.
+
+A further note on the disappearing dialog from version 1.  I've noticed that
+if any resources that a program expects are not present, it just doesn't run.
+Again, no messages.  I noticed this on a commercial package that required its
+own font.  At first I forgot to install the font.  The program wouldn't run,
+and OS/2 wouldn't tell me why it wouldn't.
+
+Incidentally, there is a typo in Quickhelp in the Memory Manager Overview
+section.  The example shows the digit two being shifted by the shift count.
+It should be a one.  The text preceeding the example is correct.
+
+Version 2.01
+
+Discovered that you couldn't use the keyboard to select a directory.
+
+Version 2.02
+
+An incorrect check of the Busy flag in the WriteDlgProc prevented a buffer
+from ever being written.  I had changed my busy checks several times, and
+this one must have slipped by.  Actually found by someone in our QA group
+here.  On a non-compare thread, FreeThread would overrun the ImageBuffers
+array.  This didn't *appear* to be causing any problems, but I'd rather be
+safe . . .
+
+It seems the latest PM driver from MS (177) cares a little more about the
+EXPORTS statement in the DEF file.  I didn't have all my dialog procs exported,
+and under earlier versions, it worked fine.  Now, however, if I try to call
+a proc via the WinCreateWindow, or any of its derivatives, that hasn't been
+exported, the entire system starts beeping and locks up.  The mouse responds,
+but the app locks - I don't even get the 10 second timeout from Switch To.

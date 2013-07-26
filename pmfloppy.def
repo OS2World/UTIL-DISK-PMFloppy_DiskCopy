@@ -1,0 +1,21 @@
+NAME    pmcopy	WINDOWAPI NEWFILES
+
+DESCRIPTION 'PM Disk Copy'
+
+STUB    'OS2STUB.EXE'
+
+CODE    MOVEABLE
+DATA    MOVEABLE
+
+HEAPSIZE  1024
+STACKSIZE 8192
+
+EXPORTS ClientWndProc
+        ReadDlgProc
+        WriteDlgProc
+        AboutDlgProc
+        DeleteDlgProc
+        LoadDlgProc
+        SaveDlgProc
+        CompDlgProc
+

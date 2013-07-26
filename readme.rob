@@ -1,0 +1,29 @@
+This is a 32 bit verstion of pmfloppy written by Greg Bryant
+andBrady Flowers.  Mainly I have just enhanced the usability,
+cleaned upone or two bugs and hopefully not caused too many new
+ones
+
+There are two new "Disk" functions:
+  1. Duplicate - Read a disk into an image, write the image to a
+     new floppy, read the new floppy into a second image, compare
+     the two images.  You are prompted for the new floppy when it
+     is required.
+  2. Copy/Check - Write an image to a floppy, read the floppy
+     into a second image, compare the images.
+
+Both of these functions are available on the Disk drop-down.
+
+There are Two new "Image" functions:
+  1. Floppy->file - Reads a floppy and stores the image in a file on disk
+  2. File->floppy - reads an image file from disk, writes it onto a
+	floppy, reads the floppy into a memory image then compares the two
+	images.
+
+Both of these functions are available from the Image drop=down.  They
+use identical dialog windows, but only the File->floppy process uses the
+second image.
+
+I have used the Guidelines product to generate my new dialogs, but not
+to generate any code.  This has required changes to the generated .dlg
+and .h files.  These changes are accomplished by the sed editor as you
+can see from the Make file.

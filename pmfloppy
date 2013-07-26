@@ -1,0 +1,15 @@
+pmfloppy.obj:	pmfloppy.c pmfloppy.h copydlgs.h dskim.h
+	cl -c -AL -Zep -G2sw -W3 -Od -Zi pmfloppy.c
+
+copydlgs.obj:	copydlgs.c pmfloppy.h copydlgs.h dskim.h
+	cl -c -AL -Zep -G2sw -W3 -Od -Zi copydlgs.c
+
+dskim.obj:	dskim.c pmfloppy.h dskim.h
+	cl -c -AL -Zep -G2sw -W3 -Od -Zi dskim.c
+
+pmfloppy.res:	pmfloppy.rc pmfloppy.h copydlgs.dlg copydlgs.h
+        rc -r pmfloppy.rc
+
+pmfloppy.exe:	pmfloppy.obj dskim.obj copydlgs.obj pmfloppy.res pmfloppy.def
+	link /CO /align:16 pmfloppy+dskim+copydlgs, , , os2, pmfloppy.def
+        rc pmfloppy.res pmfloppy.exe
